@@ -17,26 +17,32 @@ trajectory <- hysplit_trajectory(
 
 trajectory_plot(trajectory)
 
-dispersion_model <- create_disp_model() %>%
+dispersion <- hysplit_dispersion(lat = 35.792731,
+                                 lon = -90.011787,
+                                 height = 2,
+                                 duration = 3,
+                                 start_day = "2020-10-02",
+                                 start_hour = 13,
+                                 direction = "forward",
+                                 met_type = "nam12",
+                                 species = c(1))
+
+
+
+dispersion_model <- create_dispersion_model() %>%
                                         add_emissions(
                                           rate = 5,
                                           duration = 6,
                                           start_day = "2015-07-01",
                                           start_hour = 0) %>%
-                                        add_species(
-                                          pdiam = 1,
-                                          density = 1,
-                                          shape_factor = 1) %>%
                                         add_grid(
                                           range = c(0.5, 0.5),
                                           division = c(0.1, 0.1)) %>%
-                                        add_params(
+                                        add_source(
                                           lat = 49.0,
                                           lon = -123.0,
-                                          height = 50,
-                                          duration = 24,
-                                          start_day = "2015-07-01",
-                                          start_hour = 0,
-                                          direction = "forward",
-                                          met_type = "reanalysis") %>%
+                                          height = 2,
+                                          ) %>%
                                         run_model()
+
+dispersion_model %>% dispersion_plot()
